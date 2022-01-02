@@ -4,3 +4,4 @@ logs
 yarn.lock
 package-lock.json
 postgresql
+yarn-error.log
