@@ -1,0 +1,66 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    entrypoint: dockerize -wait tcp://node:3000 -timeout 5m
+    command: ['nginx', '-g', 'daemon off;']
+    networks:
+      - node_nginx
+    depends_on:
+      - node
+    ports:
+      - 80:80
+    restart: 'unless-stopped'
+
+  node:
+    build:
+      context: ./node
+    container_name: node
+    volumes:
+      - ./node/:/usr/src/app/
+      - /usr/src/app/node_modules/
+    entrypoint: dockerize -wait tcp://postgres:5432 -timeout 5m
+    command: tail -f /dev/null
+    # command:  ["pm2-runtime", "app.js","--watch"]
+    networks:
+      - node_nginx
+      - node_postgres
+      - node_redis
+    depends_on:
+      - postgres
+      - redis
+    restart: 'unless-stopped'
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: 1234
+      TZ: 'Asia/Seoul'
+    ports:
+      - 5432:5432
+    networks:
+      - node_postgres
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 3307:3307
+    networks:
+      - node_redis
+
+networks:
+  node_nginx:
+    driver: bridge
+  node_postgres:
+    driver: bridge
+  node_redis:
+    driver: bridge
+# **/node_modules
