@@ -1,23 +1,21 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "mydb",
-    "host": "mysql",
-    "dialect": "mysql"
+    "username": "postgres",
+    "password": "1234",
+    "host": "postgres",
+    "dialect": "postgres"
   },
   "test": {
-    "username": "root",
-    "password": "root",
-    "database": "mydb",
-    "host": "mysql",
-    "dialect": "mysql"
+    "username": "postgres",
+    "password": "1234",
+    "host": "postgres",
+    "dialect": "postgres"
   },
   "production": {
     "username": "root",
-    "password": "root",
-    "database": "mydb",
-    "host": "mysql",
-    "dialect": "mysql"
+    "password": null,
+    "host": "postgres",
+    "dialect": "postgres"
   }
 }
+
