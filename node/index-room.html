@@ -12,16 +12,24 @@
                 path: '/socket.io'// 서버 사이드의 path 설정과 동일해야 한다
             });
 
-            socket.on('message', function(data){
-                $('#chat').append('<li>'+ data +'</li>');
-            });
+            socket.on("message", function(data){
+                console.log(data)
+                $('#chat').append('<li>'+ data.content +'</li>');
+            })
 
             $(function() {
                 $('#btnSend').click(function(){
-                    socket.emit('message', $('#inputText').val());
+                    socket.emit("message", {
+                        channel_name: $("#Channel").text(),
+                        room_name: $("#Room").text(),
+                        user_name: $("#User").text(),
+                        content: $("#inputText").val()
+                    });
+                    // socket.emit('message', $('#inputText').val());
                     $('#chat').append('<li>'+ $('#inputText').val() +'</li>');
                     $('#inputText').val('');
                 });
+                
             })
         } else {
             alert('websocket을 지원하지 않는 브라우저입니다.');
@@ -31,6 +39,9 @@
 </head>
 <body>
 socketio redis store...<br/>
+<h1 id="Channel">Channel1</h1> 
+<h2 id="Room">room1</h2>
+<p id="User">root</p>
 <input type="text" id="inputText" />
 <button id="btnSend">보내기</button>
 <ul id="chat"></ul>

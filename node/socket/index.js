@@ -14,7 +14,19 @@ module.exports = (server) => {
     console.log(`✔ ${ip} 클라이언트 접속, socket.id : ${socket.id}`);
 
     socket.on("message", function (data) {
+      const { channel_name, room_name } = data;
+
+      const date = new Date(+new Date() + 3240 * 10000)
+        .toISOString()
+        .split("T")[0];
+      const time = new Date().toTimeString().split(" ")[0];
+
+      data.created = date + " " + time;
       console.log("message from client: ", data);
+
+      socket.join(channel_name + room_name);
+
+      socket.to(channel_name + room_name).emit("message", data);
     });
 
     // 연결 해제
