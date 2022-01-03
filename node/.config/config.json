@@ -1,19 +1,22 @@
 {
   "development": {
-    "username": "postgres",
+    "username": "docker",
+    "database":"postgres",
     "password": "1234",
     "host": "postgres",
     "dialect": "postgres"
   },
   "test": {
-    "username": "postgres",
+    "username": "docker",
+    "database":"postgres",
     "password": "1234",
     "host": "postgres",
     "dialect": "postgres"
   },
   "production": {
-    "username": "root",
-    "password": null,
+    "username": "docker",
+    "database":"postgres",
+    "password": "1234",
     "host": "postgres",
     "dialect": "postgres"
   }
