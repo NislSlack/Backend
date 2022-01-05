@@ -5,19 +5,24 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const morganMiddleware = require("./.config/morgan");
 const session = require("express-session");
-const RedisStore = require("connect-redis")(session);
+// const RedisStore = require("connect-redis")(session);
 const logger = require("./.config/winston");
 const swaggerUi = require("swagger-ui-express");
 const specs = require("./.swagger");
-const redis = require("redis");
+// const redis = require("redis");
 const webSocket = require("./socket");
 const { admin, adminRouter } = require("./.adminjs/index");
+
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const channelRouter = require("./routes/channel");
+const roomRouter = require("./routes/room");
+const chatRouter = require("./routes/chat");
+
 require("./.sequelize")();
 const app = express();
 
-const redisClient = redis.createClient({ host: "redis", logErrors: true });
+// const redisClient = redis.createClient({ host: "redis", logErrors: true });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(admin.options.rootPath, adminRouter);
@@ -30,13 +35,16 @@ app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/channel", channelRouter);
+app.use("/room", roomRouter);
+app.use("/chat", chatRouter);
 
 app.use(
   session({
     secret: "secret",
-    store: new RedisStore({
-      client: redisClient,
-    }),
+    // store: new RedisStore({
+    //   client: redisClient,
+    // }),
     resave: false,
     saveUninitialized: true,
   })

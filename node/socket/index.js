@@ -1,10 +1,10 @@
 const SocketIO = require("socket.io");
-var redis = require("socket.io-redis");
+// var redis = require("socket.io-redis");
 
 module.exports = (server) => {
   // 이는 클라이언트가 /socket.io 경로 접근시 소켓 연결을 시작함을 의미
   const io = SocketIO(server, { path: "/socket.io", cors: { origin: "*" } });
-  io.adapter(redis({ host: "redis" }));
+  // io.adapter(redis({ host: "redis" }));
 
   // 연결시 connection 이벤트 발생한 후 콜백 실행
   io.on("connection", (socket) => {
@@ -13,9 +13,18 @@ module.exports = (server) => {
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     console.log(`✔ ${ip} 클라이언트 접속, socket.id : ${socket.id}`);
 
-    socket.on("message", function (data) {
-      const { channel_name, room_name } = data;
+    socket.on("join", function (data) {
+      console.log(`---------${socket.id}'s join-----------`);
 
+      data.map((data) => {
+        const { channel_name, room_name } = data;
+        socket.join(channel_name + room_name);
+        console.log(channel_name + room_name);
+      });
+      console.log("---------------------------------------");
+    });
+
+    socket.on("message", function (data) {
       const date = new Date(+new Date() + 3240 * 10000)
         .toISOString()
         .split("T")[0];
@@ -23,10 +32,9 @@ module.exports = (server) => {
 
       data.created = date + " " + time;
       console.log("message from client: ", data);
+      const { channel_name, room_name } = data;
 
-      socket.join(channel_name + room_name);
-
-      socket.to(channel_name + room_name).emit("message", data);
+      io.sockets.in(channel_name + room_name).emit("message", data);
     });
 
     // 연결 해제
