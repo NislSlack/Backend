@@ -18,6 +18,9 @@ const usersRouter = require("./routes/users");
 const channelRouter = require("./routes/channel");
 const roomRouter = require("./routes/room");
 const chatRouter = require("./routes/chat");
+const cors = require('cors');
+
+
 
 require("./.sequelize")();
 const app = express();
@@ -26,6 +29,8 @@ const app = express();
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(admin.options.rootPath, adminRouter);
+
+app.use(cors());
 
 app.use(helmet());
 app.use(morganMiddleware);
