@@ -43,7 +43,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
+router.post("/get", async (req, res, next) => {
   try {
     const exChannel = await ChannelMember.findOne({
       where: {
