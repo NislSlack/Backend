@@ -1,10 +1,10 @@
 const express = require("express");
-const { User, sequlize } = require("../models");
+const { User, sequelize } = require("../models");
 const { packPayloadRes } = require("../lib/response");
 const router = express.Router();
 
 router.post("/signup", async (req, res, next) => {
-  const regiUser = await sequlize.transaction();
+  const regiUser = await sequelize.transaction();
   try {
     const exUser = await Channel.findOne({
       where: {
