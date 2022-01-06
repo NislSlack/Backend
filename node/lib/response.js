@@ -9,10 +9,9 @@ const sendPaylaod = (res, payload) => {
   }
 };
 /* 응답 payload Pack */
-const packPayloadRes = (res, resCode, msgType, reason, csn, nsc, content) => {
+const packPayloadRes = (res, resCode, reason, content) => {
   const payload = {
     resCode,
-    msgType,
     reason,
     content,
   };

@@ -3,13 +3,6 @@ var router = express.Router();
 const { User, sequelize } = require("../models");
 
 /* GET home page. */
-router.get("/", async (req, res, next) => {
-  // const exUser = await User.findOne({
-  //   where: {
-  //     id: 1,
-  //   },
-  // });
-  // res.send(exUser);
-});
+router.get("/", async (req, res, next) => {});
 
 module.exports = router;
