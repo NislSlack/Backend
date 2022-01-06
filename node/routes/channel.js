@@ -97,7 +97,8 @@ router.get("/", async (req, res, next) => {
       res,
       h.resCode.cltchannel02.unknowsErr,
       h.msgType.cltChannel02Res,
-      "기타 오류"
+      "기타 오류",
+      err
     );
   }
 });
