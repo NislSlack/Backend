@@ -25,7 +25,7 @@
                         user_name: $("#User").text(),
                         content: $("#inputText").val()
                     });
-                    socket.emit('message', $('#inputText').val());
+                    // socket.emit('message', $('#inputText').val());
                     // $('#chat').append('<li>'+ $('#inputText').val() +'</li>');
                     
                     $('#inputText').val('');
@@ -34,7 +34,7 @@
             })
             socket.emit("join",[{
                 channel_name: "Channel1",
-                room_name: "Room",
+                room_name: "room1",
             }] )
         } else {
             alert('websocket을 지원하지 않는 브라우저입니다.');

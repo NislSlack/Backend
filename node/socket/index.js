@@ -32,7 +32,6 @@ module.exports = (server) => {
       data.created = date + " " + time;
       console.log("message from client: ", data);
       const { channel_name, room_name } = data;
-      console.log(data);
       io.sockets.in(channel_name + room_name).emit("message", data);
     });
 
