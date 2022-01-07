@@ -25,25 +25,29 @@
                         user_name: $("#User").text(),
                         content: $("#inputText").val()
                     });
-                    // socket.emit('message', $('#inputText').val());
-                    $('#chat').append('<li>'+ $('#inputText').val() +'</li>');
+                    socket.emit('message', $('#inputText').val());
+                    // $('#chat').append('<li>'+ $('#inputText').val() +'</li>');
+                    
                     $('#inputText').val('');
                 });
                 
             })
+            socket.emit("join",[{
+                channel_name: "Channel1",
+                room_name: "Room",
+            }] )
         } else {
             alert('websocket을 지원하지 않는 브라우저입니다.');
         }
 
     </script>
 </head>
-<body>
-socketio redis store...<br/>
-<h1 id="Channel">Channel1</h1> 
-<h2 id="Room">room1</h2>
-<p id="User">root</p>
-<input type="text" id="inputText" />
-<button id="btnSend">보내기</button>
-<ul id="chat"></ul>
-</body>
+    <body>
+        <h1 id="Channel">Channel1</h1> 
+        <h2 id="Room">room1</h2>
+        <p id="User">root</p>
+        <input type="text" id="inputText" />
+        <button id="btnSend">보내기</button>
+        <ul id="chat"></ul>
+    </body>
 </html>

@@ -15,7 +15,6 @@ module.exports = (server) => {
 
     socket.on("join", function (data) {
       console.log(`---------${socket.id}'s join-----------`);
-
       data.map((data) => {
         const { channel_name, room_name } = data;
         socket.join(channel_name + room_name);
@@ -33,7 +32,7 @@ module.exports = (server) => {
       data.created = date + " " + time;
       console.log("message from client: ", data);
       const { channel_name, room_name } = data;
-
+      console.log(data);
       io.sockets.in(channel_name + room_name).emit("message", data);
     });
 
