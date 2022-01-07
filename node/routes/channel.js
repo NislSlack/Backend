@@ -45,7 +45,7 @@ router.post("/", async (req, res, next) => {
 
 router.post("/get", async (req, res, next) => {
   try {
-    const exChannel = await ChannelMember.findOne({
+    const exChannel = await ChannelMember.findAll({
       where: {
         user_name: req.body.user_name,
       },
@@ -61,7 +61,7 @@ router.post("/get", async (req, res, next) => {
 });
 
 router.post("/member", async (req, res, next) => {
-  const regiChannel = await sequelize.transaction();
+  const regiChannelMember = await sequelize.transaction();
   try {
     const exChannel = await Channel.findOne({
       where: {
@@ -81,20 +81,25 @@ router.post("/member", async (req, res, next) => {
       return packPayloadRes(res, 2, "해당 이름에 유저 정보없음");
     }
 
-    // 채널 생성
-    await Channel.create({
-      name: req.body.channel_name,
-      maker: req.body.user_name,
+    const exChannelMember = await ChannelMember.findOne({
+      where: {
+        channel_name: req.body.channel_name,
+        user_name: req.body.user_name,
+      },
     });
+    if (exChannelMember) {
+      return packPayloadRes(res, 2, "유저가 채널 추가되어 있음");
+    }
+
     // 채널에 가입
     await ChannelMember.create({
       channel_name: req.body.channel_name,
       user_name: req.body.user_name,
     });
-    await regiChannel.commit();
+    await regiChannelMember.commit();
     return packPayloadRes(res, 0, "채널 맴버 등록 성공");
   } catch (err) {
-    await regiChannel.rollback();
+    await regiChannelMembe.rollback();
     return packPayloadRes(res, 1, "기타 오류", err);
   }
 });

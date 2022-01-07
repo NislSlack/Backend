@@ -18,9 +18,7 @@ const usersRouter = require("./routes/users");
 const channelRouter = require("./routes/channel");
 const roomRouter = require("./routes/room");
 const chatRouter = require("./routes/chat");
-const cors = require('cors');
-
-
+const cors = require("cors");
 
 require("./.sequelize")();
 const app = express();
@@ -39,7 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/user", usersRouter);
 app.use("/channel", channelRouter);
 app.use("/room", roomRouter);
 app.use("/chat", chatRouter);

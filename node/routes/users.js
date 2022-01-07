@@ -6,9 +6,9 @@ const router = express.Router();
 router.post("/signup", async (req, res, next) => {
   const regiUser = await sequelize.transaction();
   try {
-    const exUser = await Channel.findOne({
+    const exUser = await User.findOne({
       where: {
-        user_name: req.body.name,
+        user_id: req.body.user_id,
       },
     });
     if (exUser) {
@@ -16,7 +16,7 @@ router.post("/signup", async (req, res, next) => {
     }
 
     await User.create({
-      name: req.body.name,
+      name: req.body.user_name,
       user_id: req.body.user_id,
       user_pw: req.body.user_pw,
     });
@@ -24,6 +24,7 @@ router.post("/signup", async (req, res, next) => {
     return packPayloadRes(res, 0, "유저 등록 성공");
   } catch (err) {
     await regiUser.rollback();
+    console.log(err);
     return packPayloadRes(res, 1, "기타 오류", err);
   }
 });
@@ -56,14 +57,20 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.put("/logout", async (req, res, next) => {
+router.post("/logout", async (req, res, next) => {
   try {
-    if (!exChannel) {
-      return packPayloadRes(res, 2, "유저가 포함된 채널 정보없음");
+    const exUser = await User.findOne({
+      where: {
+        user_id: req.body.user_id,
+      },
+    });
+    if (!exUser) {
+      return packPayloadRes(res, 2, "해당 이름에 유저 정보없음");
     }
-    return packPayloadRes(res, 0, "채널 정보 조회 성공", exChannel);
+
+    return packPayloadRes(res, 0, "로그아웃 성공");
   } catch (err) {
-    return packPayloadRes(res, 1, "기타 오류");
+    return packPayloadRes(res, 1, "기타 오류", err);
   }
 });
 
