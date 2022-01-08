@@ -17,10 +17,14 @@ router.post("/get", async function (req, res, next) {
       return packPayloadRes(res, 2, "방이 존재하지 않음");
     }
     const exChat = await Chat.findAll({
+      // include: Room,
       where: {
         channel_name: req.body.channel_name,
         room_id: room_id.dataValues.id,
       },
+    });
+    exChat.map((chat) => {
+      chat.dataValues.room_name = req.body.room_name;
     });
     if (!exChat) {
       return packPayloadRes(res, 2, "채팅 정보없음");
