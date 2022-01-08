@@ -16,7 +16,6 @@ router.post("/get", async function (req, res, next) {
     if (!room_id) {
       return packPayloadRes(res, 2, "방이 존재하지 않음");
     }
-    console.log(room_id);
     const exChat = await Chat.findAll({
       where: {
         channel_name: req.body.channel_name,

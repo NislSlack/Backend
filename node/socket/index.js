@@ -1,4 +1,5 @@
 const SocketIO = require("socket.io");
+const { Chat, Room, sequelize } = require("../models");
 // var redis = require("socket.io-redis");
 
 module.exports = (server) => {
@@ -23,7 +24,7 @@ module.exports = (server) => {
       console.log("---------------------------------------");
     });
 
-    socket.on("message", function (data) {
+    socket.on("message", async function (data) {
       const date = new Date(+new Date() + 3240 * 10000)
         .toISOString()
         .split("T")[0];
@@ -32,6 +33,21 @@ module.exports = (server) => {
       data.created = date + " " + time;
       console.log("message from client: ", data);
       const { channel_name, room_name } = data;
+
+      const room_id = await Room.findOne({
+        attributes: ["id"],
+        where: {
+          channel_name: data.channel_name,
+          name: data.room_name,
+        },
+      });
+      await Chat.create({
+        channel_name: data.channel_name,
+        room_id: room_id.dataValues.id,
+        maker: data.user_name,
+        content: data.content,
+        created: data.created,
+      });
       io.sockets.in(channel_name + room_name).emit("message", data);
     });
 
