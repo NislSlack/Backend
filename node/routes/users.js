@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const { User, sequelize } = require("../models");
 const { packPayloadRes } = require("../lib/response");
 const router = express.Router();
@@ -32,6 +33,9 @@ router.post("/signup", async (req, res, next) => {
 /* POST users listing. */
 router.post("/login", async (req, res, next) => {
   try {
+    if (req.session.is_logined) {
+      return packPayloadRes(res, 2, "로그인 상태");
+    }
     const exUser = await User.findOne({
       where: {
         user_id: req.body.user_id,
@@ -51,6 +55,9 @@ router.post("/login", async (req, res, next) => {
       return packPayloadRes(res, 2, "유저 아이디나 유저 비밀번호가 틀림");
     }
 
+    console.log(req.session);
+    req.session.is_logined = true;
+
     return packPayloadRes(res, 0, "로그인 성공");
   } catch (err) {
     return packPayloadRes(res, 1, "기타 오류", err);
@@ -59,6 +66,10 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/logout", async (req, res, next) => {
   try {
+    if (!req.session.is_logined) {
+      return packPayloadRes(res, 2, "로그인 안함");
+    }
+
     const exUser = await User.findOne({
       where: {
         user_id: req.body.user_id,
@@ -68,8 +79,13 @@ router.post("/logout", async (req, res, next) => {
       return packPayloadRes(res, 2, "해당 이름에 유저 정보없음");
     }
 
+    req.session.destroy((err) => {
+      if (err) throw err;
+    });
+
     return packPayloadRes(res, 0, "로그아웃 성공");
   } catch (err) {
+    console.log(err);
     return packPayloadRes(res, 1, "기타 오류", err);
   }
 });

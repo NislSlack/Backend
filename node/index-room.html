@@ -9,7 +9,7 @@
         var supportsWebSockets = 'WebSocket' in window || 'MozWebSocket' in window;
         if (supportsWebSockets) {
             var socket = io('http://localhost:80', {
-                path: '/socket.io'// 서버 사이드의 path 설정과 동일해야 한다
+                path: '/socket.io/',// 서버 사이드의 path 설정과 동일해야 한다
             });
 
             socket.on("chat_message", function(data){

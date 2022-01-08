@@ -36,12 +36,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/", indexRouter);
-app.use("/user", usersRouter);
-app.use("/channel", channelRouter);
-app.use("/room", roomRouter);
-app.use("/chat", chatRouter);
-
 app.use(
   session({
     secret: "secret",
@@ -52,6 +46,12 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+app.use("/", indexRouter);
+app.use("/user", usersRouter);
+app.use("/channel", channelRouter);
+app.use("/room", roomRouter);
+app.use("/chat", chatRouter);
 
 app.use(passport.initialize());
 app.use(passport.session());
