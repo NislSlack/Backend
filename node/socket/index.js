@@ -2,6 +2,8 @@ const SocketIO = require("socket.io");
 const { Chat, Room, sequelize } = require("../models");
 // var redis = require("socket.io-redis");
 
+const users = {};
+
 module.exports = (server) => {
   // 이는 클라이언트가 /socket.io 경로 접근시 소켓 연결을 시작함을 의미
   const io = SocketIO(server, { path: "/socket.io", cors: { origin: "*" } });
@@ -14,7 +16,7 @@ module.exports = (server) => {
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     console.log(`✔ ${ip} 클라이언트 접속, socket.id : ${socket.id}`);
 
-    socket.on("join", function (data) {
+    socket.on("chat_join", function (data) {
       console.log(`---------${socket.id}'s join-----------`);
       data.map((data) => {
         const { channel_name, room_name } = data;
@@ -24,7 +26,7 @@ module.exports = (server) => {
       console.log("---------------------------------------");
     });
 
-    socket.on("message", async function (data) {
+    socket.on("chat_message", async function (data) {
       const date = new Date(+new Date() + 3240 * 10000)
         .toISOString()
         .split("T")[0];
@@ -48,7 +50,7 @@ module.exports = (server) => {
         content: data.content,
         created: data.created,
       });
-      io.sockets.in(channel_name + room_name).emit("message", data);
+      io.sockets.in(channel_name + room_name).emit("chat_message", data);
     });
 
     // 연결 해제

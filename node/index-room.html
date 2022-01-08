@@ -12,14 +12,14 @@
                 path: '/socket.io'// 서버 사이드의 path 설정과 동일해야 한다
             });
 
-            socket.on("message", function(data){
+            socket.on("chat_message", function(data){
                 console.log(data)
                 $('#chat').append('<li>'+ data.content +'</li>');
             })
 
             $(function() {
                 $('#btnSend').click(function(){
-                    socket.emit("message", {
+                    socket.emit("chat_message", {
                         channel_name: $("#Channel").text(),
                         room_name: $("#Room").text(),
                         user_name: $("#User").text(),
@@ -32,7 +32,7 @@
                 });
                 
             })
-            socket.emit("join",[{
+            socket.emit("chat_join",[{
                 channel_name: "ch1",
                 room_name: "room2",
             }] )

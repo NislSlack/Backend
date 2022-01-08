@@ -20,7 +20,6 @@ router.post("/get", async function (req, res, next) {
       where: {
         channel_name: req.body.channel_name,
         room_id: room_id.dataValues.id,
-        maker: req.body.user_name,
       },
     });
     if (!exChat) {
