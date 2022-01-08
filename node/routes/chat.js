@@ -16,10 +16,11 @@ router.post("/get", async function (req, res, next) {
     if (!room_id) {
       return packPayloadRes(res, 2, "방이 존재하지 않음");
     }
+    console.log(room_id);
     const exChat = await Chat.findAll({
       where: {
         channel_name: req.body.channel_name,
-        room_id: room_id,
+        room_id: room_id.dataValues.id,
         maker: req.body.user_name,
       },
     });
@@ -27,7 +28,7 @@ router.post("/get", async function (req, res, next) {
       return packPayloadRes(res, 2, "채팅 정보없음");
     }
 
-    return packPayloadRes(res, 0, "채팅 정보 조회 성공", exRoom);
+    return packPayloadRes(res, 0, "채팅 정보 조회 성공", exChat);
   } catch (err) {
     console.log(err);
     return packPayloadRes(res, 1, "기타 오류", err);
