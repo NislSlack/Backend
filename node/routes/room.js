@@ -31,6 +31,7 @@ router.post("/", async (req, res, next) => {
     await Room.create({
       channel_name: req.body.channel_name,
       name: req.body.room_name,
+      type: req.body.room_type,
     });
     await regiRoom.commit();
     return packPayloadRes(res, 0, "방 등록 성공");

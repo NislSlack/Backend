@@ -9,7 +9,7 @@ router.post("/signup", async (req, res, next) => {
   try {
     const exUser = await User.findOne({
       where: {
-        user_id: req.body.user_id,
+        name: req.body.user_name,
       },
     });
     if (exUser) {
@@ -18,8 +18,8 @@ router.post("/signup", async (req, res, next) => {
 
     await User.create({
       name: req.body.user_name,
-      user_id: req.body.user_id,
-      user_pw: req.body.user_pw,
+      // user_id: req.body.user_id,
+      // user_pw: req.body.user_pw,
     });
     await regiUser.commit();
     return packPayloadRes(res, 0, "유저 등록 성공");
@@ -33,12 +33,17 @@ router.post("/signup", async (req, res, next) => {
 /* POST users listing. */
 router.post("/login", async (req, res, next) => {
   try {
-    if (req.session.is_logined) {
+    if (!req.session.is_logined) {
+      req.session.is_logined = {};
+    }
+
+    if (req.session.is_logined[req.body.user_name]) {
       return packPayloadRes(res, 2, "로그인 상태");
     }
     const exUser = await User.findOne({
       where: {
-        user_id: req.body.user_id,
+        name: req.body.user_name,
+        // user_id: req.body.user_id,
       },
     });
     if (!exUser) {
@@ -47,17 +52,16 @@ router.post("/login", async (req, res, next) => {
 
     const loginUser = await User.findOne({
       where: {
-        user_id: req.body.user_id,
-        user_pw: req.body.user_pw,
+        name: req.body.user_name,
+        // user_id: req.body.user_id,
+        // user_pw: req.body.user_pw,
       },
     });
     if (!loginUser) {
       return packPayloadRes(res, 2, "유저 아이디나 유저 비밀번호가 틀림");
     }
 
-    req.session.user_name = req.body.user;
-    req.session.is_logined = true;
-    console.log(req.session);
+    req.session.is_logined[req.body.user_name] = req.body.user_name;
 
     return packPayloadRes(res, 0, "로그인 성공");
   } catch (err) {
@@ -67,23 +71,21 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/logout", async (req, res, next) => {
   try {
-    if (!req.session.is_logined) {
+    if (!req.session.is_logined[req.body.user_name]) {
       return packPayloadRes(res, 2, "로그인 안함");
     }
 
     const exUser = await User.findOne({
       where: {
-        user_id: req.body.user_id,
+        // user_id: req.body.user_id,
+        name: req.body.user_name,
       },
     });
     if (!exUser) {
       return packPayloadRes(res, 2, "해당 이름에 유저 정보없음");
     }
 
-    req.session.destroy((err) => {
-      if (err) throw err;
-    });
-
+    delete req.session.is_logined[req.body.user_name];
     return packPayloadRes(res, 0, "로그아웃 성공");
   } catch (err) {
     console.log(err);

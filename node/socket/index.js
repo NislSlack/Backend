@@ -74,6 +74,7 @@ module.exports = (server) => {
       socket.emit("rtc_yourID", socket.id);
       io.sockets.emit("rtc_allUsers", user);
     });
+
     socket.on("rtc_callUser", (data) => {
       io.to(data.userToCall).emit("rtc_hey", {
         signal: data.signalData,
