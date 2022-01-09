@@ -36,6 +36,10 @@
                 channel_name: "ch1",
                 room_name: "room2",
             }] )
+            
+            socket.emit('login', "lee")
+
+           
         } else {
             alert('websocket을 지원하지 않는 브라우저입니다.');
         }

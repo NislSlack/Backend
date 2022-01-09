@@ -3,6 +3,11 @@ const { Chat, Room, sequelize } = require("../models");
 // var redis = require("socket.io-redis");
 
 const user = {};
+const userId = [];
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
 
 module.exports = (server) => {
   // 이는 클라이언트가 /socket.io 경로 접근시 소켓 연결을 시작함을 의미
@@ -17,6 +22,16 @@ module.exports = (server) => {
     const req = socket.request;
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     console.log(`✔ ${ip} 클라이언트 접속, socket.id : ${socket.id}`);
+
+    socket.on("login", (value) => {
+      userId[socket.id] = { name: value };
+    });
+
+    socket.on("add_member", (data) => {
+      // 추가된 유저에게만 채널 이름을 넘김
+      socketId = getKeyByValue(userId, data.name);
+      io.to(socketId).emit("add_member", data.channel_name);
+    });
 
     socket.on("chat_join", function (data) {
       console.log(`---------${socket.id}'s join-----------`);
@@ -74,6 +89,13 @@ module.exports = (server) => {
     socket.on("disconnect", () => {
       console.log(`${ip} 클라이언트 접속 해제. socket.id : ${socket.id}`);
       clearInterval(socket.interval);
+
+      console.log(userId);
+
+      if (userId[socket.id]) {
+        delete userId[socket.id];
+      }
+
       if (user[socket.id]) {
         delete user[socket.id];
       }

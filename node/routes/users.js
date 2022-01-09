@@ -55,8 +55,9 @@ router.post("/login", async (req, res, next) => {
       return packPayloadRes(res, 2, "유저 아이디나 유저 비밀번호가 틀림");
     }
 
-    console.log(req.session);
+    req.session.user_name = req.body.user;
     req.session.is_logined = true;
+    console.log(req.session);
 
     return packPayloadRes(res, 0, "로그인 성공");
   } catch (err) {
